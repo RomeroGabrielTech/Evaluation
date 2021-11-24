@@ -18,7 +18,7 @@ public class Peoples{
 	@Id
 	@Column(name="id_person")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long id_person;
 	
 	@Column(name="name")
 	private String name;
@@ -29,7 +29,7 @@ public class Peoples{
 	@Column(name="password")	
 	private String password;
 
-	//private List<Phone> phones;
+
 	
 
 	

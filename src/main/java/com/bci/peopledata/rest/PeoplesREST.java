@@ -8,10 +8,16 @@
 package com.bci.peopledata.rest;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +26,7 @@ import com.bci.peopledata.entitys.Peoples;
 
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("peoples")
 public class PeoplesREST {
 	
 	
@@ -35,31 +41,48 @@ public class PeoplesREST {
 		List<Peoples> peoples = peoplesDAO.findAll();
 		
 		return ResponseEntity.ok(peoples);	
+	
+	}
+
+	@PostMapping
+	public ResponseEntity<Peoples> createPeople(@RequestBody Peoples peoples){
 		
-/*		Peoples peoples = new Peoples();
-
-		peoples.setName("Juan Rodriguez");
-		peoples.setEmail("juan@rodriguez.org");
-		peoples.setPassword("hunter2");
-*/				
-
+		Peoples newPeoples = peoplesDAO.save(peoples);
+		
+		return ResponseEntity.ok(newPeoples);
 		
 	}
-	/*
-	//@GetMapping
-	public ResponseEntity<Phone> getPhones(){
+	
+	@DeleteMapping(value="{id_person}")
+	public ResponseEntity<Void> deletePeople(@PathVariable("id_person") Long id_person){
 		
-		Phone phone = new Phone();
+		peoplesDAO.deleteById(id_person);
+
 		
-		phone.setNumber(1234567);
-		phone.setCitycode(1);
-		phone.setContrycode(57);
-		
-		return ResponseEntity.ok(phone);
+		return ResponseEntity.ok(null);
 		
 	}
-*/
+	
+	
+	@PutMapping
+	public ResponseEntity<Peoples> updatePeople(@RequestBody Peoples people){
+		
+		Optional<Peoples> optionalPeople = peoplesDAO.findById(people.getId_person());
+		
+		if(optionalPeople.isPresent()) {
+			
+			Peoples updatePeople = optionalPeople.get();
+			updatePeople.setName(people.getName());
+			peoplesDAO.save(updatePeople);
+			return ResponseEntity.ok(updatePeople);
+			
+		}else {
+			
+			return ResponseEntity.notFound().build();
+			
+		}
 
+	}
 	
 
 }
